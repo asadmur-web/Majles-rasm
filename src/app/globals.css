@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #D4AF37;
+  --color-neon-blue: #00D4FF;
+  --color-dark-slate: #1a1a2e;
+  --color-charcoal: #16213e;
+}
+
+* {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+}
