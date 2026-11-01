@@ -12,15 +12,15 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  joinRoom: (code: string, playerName: string) => void;
+  joinRoom: (data: { code: string; playerName: string }) => void;
   leaveRoom: () => void;
-  setReady: (isReady: boolean) => void;
-  startGame: () => void;
-  drawingStart: (point: { x: number; y: number }) => void;
-  drawingMove: (point: { x: number; y: number }) => void;
-  drawingEnd: () => void;
-  sendChat: (message: string) => void;
-  requestVote: () => void;
-  vote: (targetId: string) => void;
-  completeTask: (taskId: number) => void;
+  setReady: (data: { code: string; isReady: boolean }) => void;
+  startGame: (data: { code: string }) => void;
+  drawingStart: (data: { code: string; point: { x: number; y: number } }) => void;
+  drawingMove: (data: { code: string; point: { x: number; y: number } }) => void;
+  drawingEnd: (data: { code: string }) => void;
+  sendChat: (data: { code: string; message: string }) => void;
+  requestVote: (data: { code: string }) => void;
+  vote: (data: { code: string; targetId: string }) => void;
+  completeTask: (data: { taskId: number }) => void;
 }

@@ -1,6 +1,6 @@
 import { Server as NetServer } from 'http';
 import { NextApiRequest } from 'next';
-import { Server as ServerIO } from 'socket.io';
+import { Server as ServerIO, Socket } from 'socket.io';
 import { gameEngine } from '@/lib/game/engine';
 import { generateRoomCode } from '@/lib/utils/roomCode';
 
@@ -12,10 +12,6 @@ export const config = {
 
 interface SocketServer extends NetServer {
   io?: ServerIO;
-}
-
-interface SocketWithIO extends Socket {
-  server: SocketServer;
 }
 
 const ioHandler = (req: NextApiRequest, res: any) => {
@@ -31,7 +27,7 @@ const ioHandler = (req: NextApiRequest, res: any) => {
       },
     });
 
-    io.on('connection', (socket) => {
+    io.on('connection', (socket: Socket) => {
       console.log('Client connected:', socket.id);
 
       socket.on('joinRoom', ({ code, playerName }) => {

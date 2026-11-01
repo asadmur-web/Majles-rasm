@@ -76,7 +76,7 @@ export default function RoomPage() {
             <div className="space-y-2">
               {players.map((player, i) => (
                 <div key={i} className="flex items-center justify-between bg-slate-800/50 rounded-lg p-3">
-                  <span className="text-white">{player}</span>
+                  <span className="text-white">{player.name}</span>
                   <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">جاهز</span>
                 </div>
               ))}
