@@ -1,8 +1,7 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import LeaveModal from '@/components/LeaveModal';
-import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { socketManager } from '@/lib/socket/client';
 
@@ -12,26 +11,41 @@ export default function RoomPage() {
   const code = params.code as string;
   const [players, setPlayers] = useState<{id: string, name: string}[]>([]);
   const [isReady, setIsReady] = useState(false);
-  const [isHost, setIsHost] = useState(false);
+  const [isHost, setIsHost] = useState(true);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   useEffect(() => {
-    socketManager.connect();
-    socketManager.on('playerJoined', (data) => {
-      // Logic to update players list
+    const socket = socketManager.connect();
+    const playerName = 'لاعب ' + Math.floor(Math.random() * 100);
+
+    socketManager.joinRoom({ code, playerName });
+
+    socketManager.on('playerJoined', (data: any) => {
+      setPlayers(prev => {
+        if (prev.some(p => p.id === data.playerId)) return prev;
+        return [...prev, { id: data.playerId, name: data.playerName }];
+      });
     });
-    // ... other listeners
-  }, []);
+
+    socketManager.on('playerReady', (data: any) => {
+      // handle ready state update if needed
+    });
+  }, [code]);
 
   const handleLeave = () => {
     socketManager.leaveRoom();
     router.push('/');
   };
 
+  const startGame = () => {
+    socketManager.startGame({ code });
+    router.push(`/room/${code}/game`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
       <header className="border-b border-slate-800 p-4 flex items-center justify-between">
-        <button className="text-amber-400 hover:text-amber-300">← رجوع</button>
+        <button onClick={() => router.push('/')} className="text-amber-400 hover:text-amber-300">← رجوع</button>
         <div className="text-center">
           <div className="text-2xl font-bold text-amber-400">غرفة: {code}</div>
           <div className="text-sm text-slate-400">العدد: {players.length}/8</div>
@@ -72,12 +86,12 @@ export default function RoomPage() {
           </div>
 
           <div className="bg-slate-900/50 backdrop-blur rounded-2xl p-6 border border-slate-800">
-            <h3 className="text-lg font-bold mb-4 text-white">اللاعبون</h3>
+            <h3 className="text-lg font-bold mb-4 text-white">اللاعبون المتواجدون</h3>
             <div className="space-y-2">
-              {players.map((player, i) => (
-                <div key={i} className="flex items-center justify-between bg-slate-800/50 rounded-lg p-3">
-                  <span className="text-white">{player.name}</span>
-                  <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">جاهز</span>
+              {players.map((player) => (
+                <div key={player.id} className="flex items-center justify-between bg-slate-800/50 rounded-lg p-3">
+                  <span className="text-white font-medium">{player.name}</span>
+                  <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">متصل</span>
                 </div>
               ))}
             </div>
@@ -88,16 +102,19 @@ export default function RoomPage() {
           <button
             onClick={() => setIsReady(!isReady)}
             className={`w-full py-4 rounded-xl font-bold transition ${
-              isReady 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
+              isReady
+                ? 'bg-green-600 hover:bg-green-700 text-white'
                 : 'bg-amber-500 hover:bg-amber-600 text-slate-900'
             }`}
           >
-            {isReady ? 'جاهز ✓' : 'جاهز'}
+            {isReady ? 'جاهز ✓' : 'اضغط لتكون جاهزاً'}
           </button>
           {isHost && (
-            <button className="w-full mt-4 py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold border border-slate-700">
-              بدء اللعبة
+            <button
+              onClick={startGame}
+              className="w-full mt-4 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold rounded-xl shadow-lg transition"
+            >
+              بدء اللعبة 🚀
             </button>
           )}
         </aside>
@@ -105,3 +122,4 @@ export default function RoomPage() {
     </div>
   );
 }
+
