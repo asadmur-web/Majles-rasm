@@ -45,20 +45,20 @@ export default function RealTimeCanvas({ roomCode, isDrawer }: { roomCode: strin
     setIsDrawing(true);
     const rect = canvasRef.current!.getBoundingClientRect();
     const point = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    socketManager.startDrawing(roomCode, point);
+    socketManager.startDrawing({ code: roomCode, point });
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !isDrawer) return;
     const rect = canvasRef.current!.getBoundingClientRect();
     const point = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    socketManager.moveDrawing(roomCode, point);
+    socketManager.moveDrawing({ code: roomCode, point });
   };
 
   const stopDrawing = () => {
     if (!isDrawing) return;
     setIsDrawing(false);
-    socketManager.endDrawing(roomCode);
+    socketManager.endDrawing({ code: roomCode });
   };
 
   return (

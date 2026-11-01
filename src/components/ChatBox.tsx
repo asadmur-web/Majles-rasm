@@ -15,7 +15,7 @@ export default function ChatBox({ roomCode }: { roomCode: string }) {
 
   const send = () => {
     if (!text.trim()) return;
-    socketManager.sendChat(roomCode, text);
+    socketManager.sendChat({ code: roomCode, message: text });
     setText('');
   };
 

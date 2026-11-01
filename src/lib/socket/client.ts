@@ -44,39 +44,39 @@ class SocketManager {
   }
 
   // Room methods
-  joinRoom(code: string, playerName: string) {
-    this.getSocket()?.emit('joinRoom', { code, playerName });
+  joinRoom(data: { code: string; playerName: string }) {
+    this.getSocket()?.emit('joinRoom', data);
   }
 
   leaveRoom() {
     this.getSocket()?.emit('leaveRoom');
   }
 
-  setReady(code: string, isReady: boolean) {
-    this.getSocket()?.emit('setReady', { code, isReady });
+  setReady(data: { code: string; isReady: boolean }) {
+    this.getSocket()?.emit('setReady', data);
   }
 
   // Drawing methods
-  startDrawing(code: string, point: { x: number; y: number }) {
-    this.getSocket()?.emit('drawingStart', { code, point });
+  startDrawing(data: { code: string; point: { x: number; y: number } }) {
+    this.getSocket()?.emit('drawingStart', data);
   }
 
-  moveDrawing(code: string, point: { x: number; y: number }) {
-    this.getSocket()?.emit('drawingMove', { code, point });
+  moveDrawing(data: { code: string; point: { x: number; y: number } }) {
+    this.getSocket()?.emit('drawingMove', data);
   }
 
-  endDrawing(code: string) {
-    this.getSocket()?.emit('drawingEnd', { code });
+  endDrawing(data: { code: string }) {
+    this.getSocket()?.emit('drawingEnd', data);
   }
 
   // Chat methods
-  sendChat(code: string, message: string) {
-    this.getSocket()?.emit('sendChat', { code, message });
+  sendChat(data: { code: string; message: string }) {
+    this.getSocket()?.emit('sendChat', data);
   }
 
   // Game methods
-  startGame(code: string) {
-    this.getSocket()?.emit('startGame', { code });
+  startGame(data: { code: string }) {
+    this.getSocket()?.emit('startGame', data);
   }
 
   requestVote(code: string) {

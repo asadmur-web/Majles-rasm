@@ -22,7 +22,7 @@ export default function GamePage() {
 
   useEffect(() => {
     socketManager.connect();
-    socketManager.joinRoom(code, 'لاعب جديد'); // Simplified
+    socketManager.joinRoom({ code, playerName: 'لاعب جديد' });
 
     const timer = setInterval(() => {
       setTimeLeft(prev => (prev > 0 ? prev - 1 : 0));
